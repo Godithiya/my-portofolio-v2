@@ -44,6 +44,21 @@ git push -u origin main
    - `SITE_URL` = URL produksi final (sama seperti di atas).
 4. Deploy.
 
+## 2b. Aktifkan CMS Visual (Decap + Netlify Identity)
+
+1. Netlify dashboard → site → **Integrations → Netlify Identity → Enable**.
+2. Identity → **Registration**: pilih `Invite only` → **Invite users** →
+   invite email kamu → konfirmasi dari inbox.
+3. Identity → **Services → Git Gateway → Enable** (memberi CMS akses commit
+   ke repo atas namamu).
+4. Buka `https://<domain>/admin/` → login dengan akun Identity.
+5. Tulis post/project di panel → **Save draft** (jadi PR) → **Publish** →
+   merge ke main → auto-deploy.
+
+> Editor di `/admin/` juga bisa dipakai dari `pnpm dev` dengan backend
+> `local` — sementara ubah `backend.name` di `public/admin/config.yml`
+> menjadi `local` (jangan di-commit).
+
 ## 3. Domain Custom (opsional)
 
 - Vercel: Project → Settings → Domains → tambah domain → ikuti instruksi DNS

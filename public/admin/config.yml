@@ -1,0 +1,128 @@
+backend:
+  name: git-gateway
+  branch: main
+
+# Draft disimpan sebagai PR (branch decap-*), "Publish" = merge ke main = deploy
+publish_mode: editorial_workflow
+
+locale: 'id'
+
+# Gambar upload via CMS disimpan di public/images, diakses sebagai /images/...
+media_folder: 'public/images'
+public_folder: '/images'
+
+collections:
+  - name: 'blog'
+    label: 'Blog'
+    label_singular: 'Post'
+    folder: 'src/content/blog'
+    create: true
+    slug: '{{year}}-{{month}}-{{day}}-{{slug}}'
+    extension: 'md'
+    format: 'frontmatter'
+    sortable_fields: ['pubDate', 'title']
+    summary: '{{title}} - {{pubDate}}'
+    fields:
+      - label: 'Judul'
+        name: 'title'
+        widget: 'string'
+      - label: 'Deskripsi'
+        name: 'description'
+        widget: 'text'
+        pattern: ['.{0,160}', 'Maksimal 160 karakter']
+        hint: 'Dipakai untuk SEO dan kartu blog (maks 160 karakter)'
+      - label: 'Tanggal publish'
+        name: 'pubDate'
+        widget: 'datetime'
+        date_format: 'YYYY-MM-DD'
+        time_format: false
+        format: 'YYYY-MM-DD'
+      - label: 'Tanggal update'
+        name: 'updatedDate'
+        widget: 'datetime'
+        date_format: 'YYYY-MM-DD'
+        time_format: false
+        format: 'YYYY-MM-DD'
+        required: false
+      - label: 'Tags'
+        name: 'tags'
+        widget: 'list'
+        required: false
+        default: []
+      - label: 'Draft'
+        name: 'draft'
+        widget: 'boolean'
+        default: false
+        hint: 'Draft TIDAK ikut dibangun ke situs sama sekali'
+      - label: 'Gambar hero'
+        name: 'heroImage'
+        widget: 'image'
+        required: false
+        hint: 'Opsional. Tersimpan di public/images'
+      - label: 'Alt gambar hero'
+        name: 'heroImageAlt'
+        widget: 'string'
+        required: false
+        hint: 'Deskripsi gambar untuk pembaca layar'
+      - label: 'Isi artikel'
+        name: 'body'
+        widget: 'markdown'
+
+  - name: 'projects'
+    label: 'Projects'
+    label_singular: 'Project'
+    folder: 'src/content/projects'
+    create: true
+    slug: '{{slug}}'
+    extension: 'md'
+    format: 'frontmatter'
+    sortable_fields: ['pubDate', 'title']
+    summary: '{{title}} - {{role}}'
+    fields:
+      - label: 'Judul'
+        name: 'title'
+        widget: 'string'
+      - label: 'Deskripsi'
+        name: 'description'
+        widget: 'text'
+        pattern: ['.{0,200}', 'Maksimal 200 karakter']
+      - label: 'Status'
+        name: 'status'
+        widget: 'select'
+        options: ['public', 'private']
+        default: 'private'
+        hint: 'Private = link demo/repo disembunyikan, diganti badge gembok'
+      - label: 'Peran'
+        name: 'role'
+        widget: 'string'
+        required: false
+        hint: 'Contoh: Fullstack Developer'
+      - label: 'Periode'
+        name: 'period'
+        widget: 'string'
+        required: false
+        hint: 'Contoh: 2025 atau 2024 - 2025'
+      - label: 'Link demo'
+        name: 'demoUrl'
+        widget: 'string'
+        required: false
+        hint: 'HANYA https:// (diabaikan bila status private)'
+      - label: 'Link repo'
+        name: 'repoUrl'
+        widget: 'string'
+        required: false
+        hint: 'HANYA https:// (diabaikan bila status private)'
+      - label: 'Tech stack'
+        name: 'techStack'
+        widget: 'list'
+      - label: 'Tanggal publish'
+        name: 'pubDate'
+        widget: 'datetime'
+        date_format: 'YYYY-MM-DD'
+        time_format: false
+        format: 'YYYY-MM-DD'
+        hint: 'Menentukan urutan kartu (terbaru lebih dulu)'
+      - label: 'Detail project'
+        name: 'body'
+        widget: 'markdown'
+        required: false

@@ -27,8 +27,8 @@ tags: ["astro", "frontend"]
 #            Default false. Dipakai untuk draft yang belum siap.
 draft: false
 
-# OPSIONAL — gambar hero. Letakkan file di src/assets/ lalu tulis path relatifnya.
-# heroImage: "../../assets/nama-gambar.jpg"
+# OPSIONAL — gambar hero. Path publik (default upload CMS: public/images).
+# heroImage: "/images/nama-gambar.jpg" (upload via CMS otomatis masuk sini, atau taruh manual di public/images)
 
 # OPSIONAL — teks alt gambar hero (aksesibilitas). Kalau kosong, fallback = judul artikel.
 # heroImageAlt: "Deskripsi singkat isi gambar hero"

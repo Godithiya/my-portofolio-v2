@@ -90,6 +90,9 @@ tanpa React/shadcn, 4 tema token-only, shelf scroll-snap, project private.
 - [x] Data personal terpusat: `src/data/profile.ts` (bio, timeline, skills, sosial)
 - [x] Template konten: `src/content/{blog,projects}/_TEMPLATE.md`
 - [x] Favicon + apple-touch-icon dari logo brand
+- [x] CMS visual Decap (Netlify git-gateway): panel /admin, collections blog +
+      projects 1:1 dengan schema, editorial workflow, media public/images
+      (heroImage jadi string path)
 - [x] 4 ronde code review (~46 temuan) — semua ditangani
 
 ---

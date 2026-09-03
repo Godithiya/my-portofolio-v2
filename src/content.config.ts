@@ -22,7 +22,7 @@ const utcDate = z
 
 const blog = defineCollection({
 	loader: glob({ base: './src/content/blog', pattern: ['**/*.md', '!**/_TEMPLATE.md'] }),
-	schema: ({ image }) =>
+	schema: () =>
 		z.object({
 			title: z.string(),
 			description: z.string().max(160),
@@ -30,7 +30,8 @@ const blog = defineCollection({
 			updatedDate: utcDate.optional(),
 			tags: z.array(z.string()).default([]),
 			draft: z.boolean().default(false),
-			heroImage: z.optional(image()),
+			// String path (biasanya '/images/...' dari upload Decap CMS di public/images)
+			heroImage: z.string().optional(),
 			heroImageAlt: z.string().optional(),
 		}),
 });
