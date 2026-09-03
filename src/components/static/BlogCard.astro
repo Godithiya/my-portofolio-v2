@@ -1,0 +1,53 @@
+---
+/**
+ * Header Doc
+ * Tujuan    : Kartu blog statis (tanpa island). Menampilkan judul, tanggal,
+ *             deskripsi, dan tags (maks 3) — styling murni dari theme tokens.
+ * Caller    : src/pages/blog/index.astro, src/pages/index.astro (recent posts)
+ * Dependensi: FormattedDate.astro, theme tokens (global.css)
+ * Main Exports: default Astro component (props: post CollectionEntry)
+ * Side Effects: Tidak ada (render statis, 0 JS).
+ */
+import FormattedDate from '../FormattedDate.astro';
+
+interface Props {
+  post: {
+    id: string;
+    data: {
+      title: string;
+      description: string;
+      pubDate: Date;
+      tags: string[];
+    };
+  };
+}
+
+const { post } = Astro.props;
+---
+
+<article
+  class="card-theme group rounded-theme border border-border bg-card p-6 shadow-theme transition-all duration-200 hover:-translate-y-1"
+>
+  <a href={`/blog/${post.id}/`} class="flex h-full flex-col">
+    <h3 class="mb-2 text-xl font-bold group-hover:text-accent">{post.data.title}</h3>
+    <p class="mb-3 text-sm text-muted-foreground">
+      <FormattedDate date={post.data.pubDate} />
+    </p>
+    <p class="flex-1 text-sm text-muted-foreground">{post.data.description}</p>
+    {
+      post.data.tags.length > 0 && (
+        <ul class="mt-4 flex flex-wrap gap-1.5" aria-label="Tags">
+          {post.data.tags.slice(0, 3).map((tag) => (
+            <li class="chip px-2.5 py-1 text-xs">
+              {tag}
+            </li>
+          ))}
+        </ul>
+      )
+    }
+    <span class="mt-4 inline-flex items-center gap-1 text-sm font-medium text-accent">
+      Read more
+      <span aria-hidden="true">&rarr;</span>
+    </span>
+  </a>
+</article>

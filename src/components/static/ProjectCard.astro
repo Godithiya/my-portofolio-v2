@@ -1,0 +1,90 @@
+---
+/**
+ * Header Doc
+ * Tujuan    : Kartu project statis. Menampilkan judul, meta (role, period),
+ *             deskripsi, tech stack, dan link demo/repo. Project ber-status
+ *             `private` TIDAK merender <a> apapun: diganti badge
+ *             "Private project" (Lock).
+ * Caller    : src/pages/index.astro (section Projects, shelf scroll-snap)
+ * Dependensi: @lucide/astro (Code2, ExternalLink, Lock), theme tokens
+ * Main Exports: default Astro component (props: project CollectionEntry)
+ * Side Effects: Tidak ada (render statis, 0 JS).
+ */
+import { Code2, ExternalLink, Lock } from '@lucide/astro';
+
+interface Props {
+  project: {
+    data: {
+      title: string;
+      description: string;
+      status: 'public' | 'private';
+      role?: string;
+      period?: string;
+      demoUrl?: string;
+      repoUrl?: string;
+      techStack: string[];
+    };
+  };
+}
+
+const { project } = Astro.props;
+const isPrivate = project.data.status === 'private';
+---
+
+<article
+  class="card-theme group flex flex-col rounded-theme border border-border bg-card p-6 shadow-theme transition-all duration-200 hover:-translate-y-1"
+>
+  <h3 class="mb-2 text-xl font-bold transition-colors group-hover:text-accent">{project.data.title}</h3>
+
+  {
+    (project.data.role || project.data.period) && (
+      <p class="mb-3 text-xs font-medium uppercase tracking-widest text-muted-foreground">
+        {[project.data.role, project.data.period].filter(Boolean).join(' · ')}
+      </p>
+    )
+  }
+
+  <p class="mb-4 flex-1 text-sm text-muted-foreground">{project.data.description}</p>
+
+  <ul class="mb-4 flex flex-wrap gap-2" aria-label="Tech stack">
+    {
+      project.data.techStack.map((tech) => (
+        <li class="chip px-2.5 py-1 text-xs">{tech}</li>
+      ))
+    }
+  </ul>
+
+  {
+    isPrivate ? (
+      <p class="chip inline-flex items-center gap-1.5 self-start px-3 py-1 text-xs font-medium">
+        <Lock size={14} aria-hidden="true" />
+        Private project
+      </p>
+    ) : (
+      <div class="flex gap-4">
+        {project.data.demoUrl && (
+          <a
+            href={project.data.demoUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="inline-flex items-center gap-1 text-sm font-medium text-accent hover:underline"
+          >
+            <ExternalLink size={16} aria-hidden="true" />
+            Live Demo
+          </a>
+        )}
+        {project.data.repoUrl && (
+          <a
+            href={project.data.repoUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="inline-flex items-center gap-1 text-sm font-medium text-accent hover:underline"
+          >
+            <Code2 size={16} aria-hidden="true" />
+            Source Code
+          </a>
+        )}
+      </div>
+    )
+  }
+</article>

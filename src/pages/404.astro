@@ -1,0 +1,28 @@
+---
+/**
+ * Header Doc
+ * Tujuan    : Halaman 404 bergaya — tetap di dalam theme system (BaseLayout,
+ *             tokens, ThemeSwitcher) alih-alih 404 default tanpa styling.
+ * Caller    : Astro router (di-serve untuk URL tak dikenal sebagai /404.html)
+ * Dependensi: BaseLayout
+ * Main Exports: default Astro page
+ * Side Effects: Tidak ada (render statis).
+ */
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="Page Not Found" description="The page you are looking for does not exist.">
+  <section class="flex min-h-[50vh] flex-col items-center justify-center py-16 text-center">
+    <p class="mb-4 text-sm font-medium uppercase tracking-widest text-accent">Error 404</p>
+    <h1 class="mb-4 text-6xl font-bold tracking-tight md:text-8xl">Not Found</h1>
+    <p class="mb-8 max-w-md text-lg text-muted-foreground">
+      The page you are looking for doesn't exist or has been moved.
+    </p>
+    <a
+      href="/"
+      class="inline-flex items-center gap-2 rounded-theme bg-accent px-6 py-3 font-medium text-accent-foreground transition-opacity hover:opacity-90"
+    >
+      Back to home
+    </a>
+  </section>
+</BaseLayout>

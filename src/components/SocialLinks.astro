@@ -1,0 +1,45 @@
+---
+/**
+ * Header Doc
+ * Tujuan    : Daftar link sosial + email dari profile.ts — ikon BRAND per
+ *             sosial media (simple-icons via astro-icon), fallback ikon Link
+ *             generik bila field icon kosong.
+ * Caller    : src/components/Header.astro, src/components/Footer.astro
+ * Dependensi: astro-icon (Icon, koleksi simple-icons), @lucide/astro (Link, Mail),
+ *             profile.ts (socialLinks, email)
+ * Main Exports: default Astro component (props: size?)
+ * Side Effects: Tidak ada (render statis, 0 JS).
+ */
+import { Icon } from 'astro-icon/components';
+import { Link as LinkIcon, Mail } from '@lucide/astro';
+import { profile, socialLinks } from '../data/profile';
+
+interface Props {
+  size?: number;
+}
+
+const { size = 20 } = Astro.props;
+---
+
+<div class="flex items-center gap-5">
+  {
+    socialLinks.map((social) => (
+      <a
+        href={social.url}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="text-muted-foreground hover:text-accent"
+        aria-label={social.label}
+      >
+        {social.icon ? (
+          <Icon name={`simple-icons:${social.icon}`} size={size} aria-hidden="true" />
+        ) : (
+          <LinkIcon size={size} aria-hidden="true" />
+        )}
+      </a>
+    ))
+  }
+  <a href={`mailto:${profile.email}`} class="text-muted-foreground hover:text-accent" aria-label="Email">
+    <Mail size={size} aria-hidden="true" />
+  </a>
+</div>

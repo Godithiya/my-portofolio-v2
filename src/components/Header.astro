@@ -1,0 +1,124 @@
+---
+/**
+ * Header Doc
+ * Tujuan    : Navbar global situs one-page — logo per tema (rasio asli 512x792,
+ *             tinggi 40px), anchor nav desktop (≥lg), MobileMenu hamburger (<lg,
+ *             berisi nav + ThemeSwitcher + social), CTA "Choose your design" +
+ *             ThemeSwitcher <select> (desktop saja).
+ * Caller    : src/layouts/BaseLayout.astro (dirender di semua halaman)
+ * Dependensi: MobileMenu.astro, SocialLinks.astro, ThemeSwitcher.astro,
+ *             assets logos (light/dark-theme.png)
+ * Main Exports: default Astro component
+ * Side Effects: MobileMenu & ThemeSwitcher memuat script inline kecil masing-masing.
+ */
+import { Image } from "astro:assets";
+import { ArrowRight } from "@lucide/astro";
+import MobileMenu from "./MobileMenu.astro";
+import SocialLinks from "./SocialLinks.astro";
+import ThemeSwitcher from "./ThemeSwitcher.astro";
+import logoLight from "../assets/logos/light-theme.png";
+import logoDark from "../assets/logos/dark-theme.png";
+
+const NAV_ITEMS = [
+    {
+        href: "/#about",
+        label: "About",
+    },
+    {
+        href: "/#projects",
+        label: "Projects",
+    },
+    {
+        href: "/#blog",
+        label: "Blog",
+    },
+    {
+        href: "/#contact",
+        label: "Contact",
+    },
+];
+---
+
+<header
+    class="sticky top-0 z-50 border-b border-border bg-background/95 backdrop-blur"
+>
+    <nav
+        class="mx-auto max-w-6xl flex items-center justify-between gap-x-4 px-4 py-2.5"
+        aria-label="Main navigation"
+    >
+        <a
+            href="/"
+            class="inline-flex items-center hover:opacity-80"
+            aria-label="Home"
+        >
+            <Image
+                src={logoLight}
+                alt="Site logo"
+                width={26}
+                height={40}
+                class="logo-light h-10 w-auto"
+                loading="eager"
+            />
+            <Image
+                src={logoDark}
+                alt="Site logo"
+                width={26}
+                height={40}
+                class="logo-dark h-10 w-auto"
+                loading="lazy"
+            />
+        </a>
+
+        
+        <div
+            class="hidden items-center gap-0.5 text-sm lg:flex lg:gap-1 lg:text-base"
+        >
+            {
+                NAV_ITEMS.map(
+                    (
+                        item,
+                    ) => (
+                        <a
+                            href={
+                                item.href
+                            }
+                            class="px-2 py-2 sm:px-3 hover:text-accent"
+                        >
+                            {
+                                item.label
+                            }
+                        </a>
+                    ),
+                )
+            }
+        </div>
+
+        <div
+            class="flex items-center gap-3"
+        >
+            
+
+            
+            <div
+                class="hidden items-center gap-2 lg:flex"
+            >
+                <span
+                    class="switcher-cta hidden md:inline-flex"
+                >
+                    Choose
+                    your
+                    design
+                    <ArrowRight
+                        class="switcher-arrow"
+                        size={14}
+                        aria-hidden="true"
+                    />
+                </span>
+                <ThemeSwitcher
+                />
+            </div>
+
+            <MobileMenu />
+        </div>
+    </nav>
+</header>

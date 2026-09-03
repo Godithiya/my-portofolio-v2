@@ -1,0 +1,469 @@
+---
+/**
+ * Header Doc
+ * Tujuan    : LANDING PAGE satu halaman — section: hero (per-tema), about
+ *             (bio singkat + skills), projects (shelf urut pubDate terbaru),
+ *             blog (3 post terbaru), contact (CTA email). Halaman terpisah
+ *             /about, /projects, /blog digabung ke sini (keputusan user);
+ *             yang tersisa hanya detail blog /blog/:slug.
+ * Caller    : Astro router (route "/")
+ * Dependensi: BaseLayout, ProjectCard, BlogCard, SocialLinks, getPublishedPosts,
+ *             getCollection, profile.ts, global.css (.hero-* per-theme)
+ * Main Exports: default Astro page
+ * Side Effects: Tidak ada (render statis, 0 JS).
+ */
+import { getCollection } from "astro:content";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import ProjectCard from "../components/static/ProjectCard.astro";
+import BlogCard from "../components/static/BlogCard.astro";
+import SocialLinks from "../components/SocialLinks.astro";
+import {
+    ArrowRight,
+    ChevronLeft,
+    ChevronRight,
+    Mail,
+    MapPin,
+} from "@lucide/astro";
+import { getPublishedPosts } from "../data/blog";
+import {
+    profile,
+    skills,
+    timeline,
+} from "../data/profile";
+
+// Urutan kartu: pubDate terbaru lebih dulu
+const projects = (
+    await getCollection(
+        "projects",
+    )
+).sort(
+    (a, b) =>
+        b.data.pubDate.valueOf() -
+        a.data.pubDate.valueOf(),
+);
+
+const posts = await getPublishedPosts();
+---
+
+<BaseLayout>
+    
+    <section
+        class="hero"
+        id="home"
+    >
+        <div
+            class="hero-deco"
+            aria-hidden="true"
+        >
+        </div>
+        <p
+            class="hero-eyebrow"
+        >
+            {profile.role}
+        </p>
+        <h1
+            class="hero-title"
+        >
+            <span
+                >{
+                    profile.name
+                }</span
+            >
+        </h1>
+        <p
+            class="hero-tagline"
+        >
+            {profile.tagline}
+        </p>
+        <div
+            class="flex flex-wrap items-center gap-6"
+        >
+            <a
+                href="#projects"
+                class="inline-flex items-center gap-2 rounded-theme bg-accent px-6 py-3 font-medium text-accent-foreground transition-opacity hover:opacity-90"
+            >
+                View Projects
+                <ArrowRight
+                    size={18}
+                    aria-hidden="true"
+                />
+            </a>
+            {
+                profile.location && (
+                    <span class="inline-flex items-center gap-1 text-sm text-muted-foreground">
+                        <MapPin
+                            size={
+                                16
+                            }
+                            aria-hidden="true"
+                        />
+                        {
+                            profile.location
+                        }
+                    </span>
+                )
+            }
+        </div>
+    </section>
+
+    
+    <section
+        id="about"
+        class="scroll-mt-24 py-16"
+        aria-labelledby="about-heading"
+    >
+        <h2
+            id="about-heading"
+            class="section-title"
+        >
+            About
+        </h2>
+        <p
+            class="mb-12 max-w-3xl leading-relaxed text-muted-foreground"
+        >
+            {profile.shortBio}
+        </p>
+
+        <div
+            class="about-panel grid grid-cols-1 gap-12 lg:grid-cols-5"
+        >
+            
+            <div
+                class="lg:col-span-3"
+            >
+                <h3
+                    class="mb-6 text-sm font-extrabold uppercase tracking-widest text-muted-foreground"
+                >
+                    Journey
+                </h3>
+                <ol
+                    class="timeline relative ml-2 space-y-8 border-l border-border pl-8"
+                >
+                    {
+                        timeline.map(
+                            (
+                                item,
+                            ) => (
+                                <li class="relative">
+                                    <span
+                                        class="timeline-marker absolute top-1.5 -left-[2.55rem] h-3.5 w-3.5 rounded-full bg-accent ring-4 ring-background"
+                                        aria-hidden="true"
+                                    />
+                                    {item.period && (
+                                        <p class="mb-1 text-xs font-medium uppercase tracking-widest text-muted-foreground">
+                                            {
+                                                item.period
+                                            }
+                                        </p>
+                                    )}
+                                    <p class="font-bold">
+                                        {
+                                            item.role
+                                        }
+                                        {item.org && (
+                                            <span class="text-accent">
+                                                {" "}
+                                                ·{" "}
+                                                {
+                                                    item.org
+                                                }
+                                            </span>
+                                        )}
+                                    </p>
+                                    <p class="mt-1 text-sm leading-relaxed text-muted-foreground">
+                                        {
+                                            item.desc
+                                        }
+                                    </p>
+                                </li>
+                            ),
+                        )
+                    }
+                </ol>
+            </div>
+
+            
+            <div
+                class="space-y-6 lg:col-span-2"
+            >
+                <h3
+                    class="text-sm font-extrabold uppercase tracking-widest text-muted-foreground"
+                >
+                    Skills
+                </h3>
+                {
+                    Object.entries(
+                        skills,
+                    ).map(
+                        ([
+                            category,
+                            items,
+                        ]) => (
+                            <div>
+                                <h4 class="mb-2 text-xs font-bold uppercase tracking-widest text-muted-foreground">
+                                    {
+                                        category
+                                    }
+                                </h4>
+                                <ul class="flex flex-wrap gap-2">
+                                    {items.map(
+                                        (
+                                            skill,
+                                        ) => (
+                                            <li class="chip px-3 py-1 text-sm">
+                                                {
+                                                    skill
+                                                }
+                                            </li>
+                                        ),
+                                    )}
+                                </ul>
+                            </div>
+                        ),
+                    )
+                }
+            </div>
+        </div>
+    </section>
+
+    
+    <section
+        id="projects"
+        class="scroll-mt-24 py-16"
+        aria-labelledby="projects-heading"
+    >
+        <div
+            class="mb-6 flex items-center justify-between gap-4"
+        >
+            <h2
+                id="projects-heading"
+                class="section-title"
+            >
+                Projects
+            </h2>
+            <div
+                class="flex items-center gap-2"
+                data-shelf-nav="projects-shelf"
+            >
+                <button
+                    type="button"
+                    class="shelf-btn"
+                    data-shelf-prev
+                    aria-label="Project sebelumnya"
+                >
+                    <ChevronLeft
+                        size={18}
+                        aria-hidden="true"
+                    />
+                </button>
+                <button
+                    type="button"
+                    class="shelf-btn"
+                    data-shelf-next
+                    aria-label="Project berikutnya"
+                >
+                    <ChevronRight
+                        size={18}
+                        aria-hidden="true"
+                    />
+                </button>
+            </div>
+        </div>
+        <div
+            id="projects-shelf"
+            class="shelf"
+        >
+            {
+                projects.map(
+                    (
+                        project,
+                    ) => (
+                        <ProjectCard
+                            project={
+                                project
+                            }
+                        />
+                    ),
+                )
+            }
+        </div>
+    </section>
+
+
+    <section
+        id="blog"
+        class="scroll-mt-24 py-16"
+        aria-labelledby="blog-heading"
+    >
+        <div
+            class="mb-6 flex items-center justify-between gap-4"
+        >
+            <h2
+                id="blog-heading"
+                class="section-title"
+            >
+                Latest Posts
+            </h2>
+            <div
+                class="flex items-center gap-4"
+            >
+                <a
+                    href="/rss.xml"
+                    class="text-sm font-medium text-accent hover:underline"
+                    >RSS feed</a
+                >
+                <div
+                    class="flex items-center gap-2"
+                    data-shelf-nav="blog-shelf"
+                >
+                    <button
+                        type="button"
+                        class="shelf-btn"
+                        data-shelf-prev
+                        aria-label="Post sebelumnya"
+                    >
+                        <ChevronLeft
+                            size={18}
+                            aria-hidden="true"
+                        />
+                    </button>
+                    <button
+                        type="button"
+                        class="shelf-btn"
+                        data-shelf-next
+                        aria-label="Post berikutnya"
+                    >
+                        <ChevronRight
+                            size={18}
+                            aria-hidden="true"
+                        />
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div
+            id="blog-shelf"
+            class="shelf"
+        >
+            {
+                posts.map(
+                    (
+                        post,
+                    ) => (
+                        <BlogCard
+                            post={
+                                post
+                            }
+                        />
+                    ),
+                )
+            }
+        </div>
+    </section>
+
+    
+    <section
+        id="contact"
+        class="scroll-mt-24 py-16"
+        aria-labelledby="contact-heading"
+    >
+        <div
+            class="card-theme rounded-theme border border-border bg-card p-10 text-center shadow-theme"
+        >
+            <h2
+                id="contact-heading"
+                class="section-title"
+            >
+                Let's work
+                together
+            </h2>
+            <p
+                class="mx-auto mb-8 max-w-md text-muted-foreground"
+            >
+                Terbuka untuk
+                proyek
+                freelance dan
+                kolaborasi.
+                Ceritakan
+                kebutuhan
+                kamu.
+            </p>
+            <div
+                class="flex flex-col items-center gap-6"
+            >
+                <a
+                    href={`mailto:${profile.email}`}
+                    class="inline-flex items-center gap-2 rounded-theme bg-accent px-8 py-4 font-medium text-accent-foreground transition-opacity hover:opacity-90"
+                >
+                    <Mail
+                        size={18}
+                        aria-hidden="true"
+                    />
+                    {
+                        profile.email
+                    }
+                </a>
+                <SocialLinks
+                />
+            </div>
+        </div>
+    </section>
+
+<script is:inline>
+    (function () {
+        var prefersReduced = window.matchMedia(
+            "(prefers-reduced-motion: reduce)",
+        ).matches;
+
+        document
+            .querySelectorAll("[data-shelf-nav]")
+            .forEach(function (nav) {
+                var shelf = document.getElementById(
+                    nav.getAttribute("data-shelf-nav"),
+                );
+                if (!shelf) return;
+
+                var prev = nav.querySelector("[data-shelf-prev]");
+                var next = nav.querySelector("[data-shelf-next]");
+                var behavior = prefersReduced ? "auto" : "smooth";
+
+                function step() {
+                    var card = shelf.firstElementChild;
+                    if (!card) return 0;
+                    var gap = parseFloat(
+                        getComputedStyle(shelf).columnGap,
+                    );
+                    return card.getBoundingClientRect().width + gap;
+                }
+
+                function update() {
+                    var max =
+                        shelf.scrollWidth - shelf.clientWidth < 8;
+                    prev.disabled = shelf.scrollLeft <= 8;
+                    next.disabled =
+                        shelf.scrollLeft >=
+                        shelf.scrollWidth - shelf.clientWidth - 8;
+                    nav.style.display = max ? "none" : "flex";
+                }
+
+                prev.addEventListener("click", function () {
+                    shelf.scrollBy({
+                        left: -step(),
+                        behavior: behavior,
+                    });
+                });
+                next.addEventListener("click", function () {
+                    shelf.scrollBy({
+                        left: step(),
+                        behavior: behavior,
+                    });
+                });
+                shelf.addEventListener("scroll", update, {
+                    passive: true,
+                });
+                window.addEventListener("resize", update);
+                update();
+            });
+    })();
+</script>
+</BaseLayout>

@@ -1,0 +1,131 @@
+---
+/**
+ * Header Doc
+ * Tujuan    : Theme switcher berupa <select> native — aksesibel bawaan platform,
+ *             compact di mobile, tanpa hydration React. Ganti tema = ganti
+ *             data-theme di <html> + persist localStorage.
+ * Caller    : src/components/Header.astro
+ * Dependensi: themes.ts (THEMES — sumber tunggal whitelist)
+ * Main Exports: default Astro component
+ * Side Effects: Script inline kecil: apply tema saat select berubah + sinkron
+ *               nilai select dengan tema aktif saat load (guarded try/catch).
+ */
+import { THEMES } from "../data/themes";
+
+const LABELS: Record<
+    (typeof THEMES)[number],
+    string
+> = {
+    "swiss-minimalist":
+        "Swiss Minimalist",
+    "neo-brutalism":
+        "Neo Brutalism",
+    neumorphism:
+        "Neumorphism",
+    "modern-dark":
+        "Modern Dark",
+};
+---
+
+<div class="relative">
+    <label>
+        <span class="sr-only"
+            >Design theme</span
+        >
+        <select
+            data-theme-select
+            class="theme-select rounded-theme border border-border bg-background px-3 py-1.5 text-sm font-medium text-foreground transition-colors hover:text-accent focus-visible:outline-2 focus-visible:outline-ring"
+        >
+            {
+                THEMES.map(
+                    (t) => (
+                        <option
+                            value={
+                                t
+                            }
+                        >
+                            {
+                                LABELS[
+                                    t
+                                ]
+                            }
+                        </option>
+                    ),
+                )
+            }
+        </select>
+    </label>
+</div>
+
+<script
+    is:inline
+    define:vars={{ THEMES }}
+>
+    (function () {
+        var VALID = THEMES;
+
+        function apply(next) {
+            if (
+                VALID.indexOf(
+                    next,
+                ) === -1
+            )
+                return;
+            document.documentElement.setAttribute(
+                "data-theme",
+                next,
+            );
+            try {
+                localStorage.setItem(
+                    "theme",
+                    next,
+                );
+            } catch (e) {}
+
+            document
+                .querySelectorAll(
+                    "[data-theme-select]",
+                )
+                .forEach(
+                    function (
+                        s,
+                    ) {
+                        s.value =
+                            next;
+                    },
+                );
+        }
+
+        document
+            .querySelectorAll(
+                "[data-theme-select]",
+            )
+            .forEach(
+                function (
+                    select,
+                ) {
+                    select.addEventListener(
+                        "change",
+                        function () {
+                            apply(
+                                select.value,
+                            );
+                        },
+                    );
+
+                    var current =
+                        document.documentElement.getAttribute(
+                            "data-theme",
+                        );
+                    if (
+                        VALID.indexOf(
+                            current,
+                        ) !==
+                        -1
+                    )
+                        select.value =
+                            current;
+                },
+            );
+    })();
+</script>

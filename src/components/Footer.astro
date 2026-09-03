@@ -1,0 +1,31 @@
+---
+/**
+ * Header Doc
+ * Tujuan    : Footer global — copyright atas nama pemilik situs (profile.ts)
+ *             dan SocialLinks bersama.
+ * Caller    : src/layouts/BaseLayout.astro (dirender di semua halaman)
+ * Dependensi: SocialLinks.astro, profile.ts
+ * Main Exports: default Astro component
+ * Side Effects: Script inline kecil update tahun copyright client-side
+ *               (tahun build dipakai sebagai fallback no-JS).
+ */
+import SocialLinks from './SocialLinks.astro';
+import { profile } from '../data/profile';
+
+const buildYear = new Date().getFullYear();
+---
+
+<footer class="border-t border-border py-12">
+  <div class="mx-auto max-w-6xl flex flex-col items-center gap-6 px-4 text-center">
+    <p class="text-sm text-muted-foreground">
+      &copy; <span data-copyright-year>{buildYear}</span> {profile.name}. All rights reserved.
+    </p>
+    <SocialLinks />
+  </div>
+</footer>
+
+<script is:inline>
+  document.querySelectorAll('[data-copyright-year]').forEach(function (el) {
+    el.textContent = String(new Date().getFullYear());
+  });
+</script>

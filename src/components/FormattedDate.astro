@@ -1,0 +1,27 @@
+---
+/**
+ * Header Doc
+ * Tujuan    : Render tanggal sebagai <time datetime=ISO> dengan format
+ *             "Mon DD, YYYY" (locale en-us) — semantik untuk screen reader.
+ * Caller    : BlogCard.astro, BlogPost.astro
+ * Dependensi: Tidak ada
+ * Main Exports: default Astro component (props: date — Date object hasil Zod coerce)
+ * Side Effects: Tidak ada (render statis).
+ */
+interface Props {
+	date: Date;
+}
+
+const { date } = Astro.props;
+---
+
+<time datetime={date.toISOString()}>
+	{
+		date.toLocaleDateString('en-us', {
+			year: 'numeric',
+			month: 'short',
+			day: 'numeric',
+			timeZone: 'UTC',
+		})
+	}
+</time>
